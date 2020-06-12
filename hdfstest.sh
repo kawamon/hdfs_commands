@@ -182,6 +182,8 @@ echo "checksum/chown/chgrp/touch"
 echo "********************"
 echo "hdfs dfs -cp contents/*.txt /tmp"
 hdfs dfs -cp contents/*.txt /tmp
+echo "hdfs dfs -checksum /tmp/a.txt"
+hdfs dfs -checksum /tmp/a.txt
 echo "hdfs dfs -ls /tmp/a.txt /tmp/b.txt"
 hdfs dfs -ls /tmp/a.txt /tmp/b.txt
 echo "sudo -u hdfs hdfs dfs -chown hdfs /tmp/a.txt"
@@ -197,8 +199,14 @@ echo "sudo -u hdfs hdfs dfs -chmod 666 /tmp/a.txt"
 hdfs dfs -ls /tmp/a.txt
 echo "hdfs dfs -touch /tmp/z.txt"
 hdfs dfs -touch /tmp/z.txt
-echo "hdfs dfs -touch -t20200609230000 /tmp/a.txt"
-hdfs dfs -touch -t20200609230000 /tmp/a.txt
+echo "hdfs dfs -ls /tmp/z.txt"
+hdfs dfs -ls /tmp/z.txt
+echo "hdfs dfs -ls /tmp/a.txt"
+hdfs dfs -ls /tmp/a.txt
+echo "hdfs dfs -touch -m -t 20200505:230000 /tmp/a.txt"
+hdfs dfs -touch -m -t 20200505:230000 /tmp/a.txt
+echo "hdfs dfs -ls /tmp/a.txt"
+hdfs dfs -ls /tmp/a.txt
 
 echo "********************"
 echo "expunge/setrep"
@@ -234,6 +242,50 @@ echo "hdfs dfs -setrep 5 /tmp/a.txt"
 hdfs dfs -setrep 5 /tmp/a.txt
 echo "hdfs dfs -ls /tmp/a.txt"
 hdfs dfs -ls /tmp/a.txt
+
+echo "********************"
+echo "acl/attr"
+echo "********************"
+hdfs dfs -mkdir -p /tmp/subdirA/subdirB/subdirC
+hdfs dfs -cp contents/* /tmp/subdirA
+
+echo "sudo -u hdfs hdfs dfs -setfacl -m user:hadoop:rw- /tmp/a.txt"
+sudo -u hdfs hdfs dfs -setfacl -m user:hadoop:rw- /tmp/a.txt
+echo "sudo -u hdfs hdfs dfs -setfacl -x user:hadoop /tmp/a.txt"
+sudo -u hdfs hdfs dfs -setfacl -x user:hadoop /tmp/a.txt
+echo "sudo -u hdfs hdfs dfs -setfacl -b /tmp/a.txt"
+sudo -u hdfs hdfs dfs -setfacl -b /tmp/a.txt
+echo "sudo -u hdfs hdfs dfs -setfacl -k /tmp/subdirA"
+sudo -u hdfs hdfs dfs -setfacl -k /tmp/subdirA
+echo "sudo -u hdfs hdfs dfs -setfacl --set user::rw-,user:hadoop:rw-,group::r--,other::r-- /tmp/a.txt"
+sudo -u hdfs hdfs dfs -setfacl --set user::rw-,user:hadoop:rw-,group::r--,other::r-- /tmp/a.txt
+echo "sudo -u hdfs hdfs dfs -setfacl -R -m user:hadoop:r-x /tmp/subdirA"
+sudo -u hdfs hdfs dfs -setfacl -R -m user:hadoop:r-x /tmp/subdirA
+echo "sudo -u hdfs hdfs dfs -setfacl -m default:user:hadoop:r-x /tmp/subdirA"
+sudo -u hdfs hdfs dfs -setfacl -m default:user:hadoop:r-x /tmp/subdirA
+
+echo "hdfs dfs -getfacl /tmp/a.txt"
+hdfs dfs -getfacl /tmp/a.txt
+echo "hdfs dfs -getfacl -R /tmp/subdirA"
+hdfs dfs -getfacl -R /tmp/subdirA
+
+echo "sudo -u hdfs hdfs dfs -setfattr -n user.myAttr -v myValue /tmp/a.txt"
+sudo -u hdfs hdfs dfs -setfattr -n user.myAttr -v myValue /tmp/a.txt
+echo "sudo -u hdfs hdfs dfs -setfattr -n user.novalue /tmp/b.txt"
+sudo -u hdfs hdfs dfs -setfattr -n user.novalue /tmp/b.txt
+echo "hdfs dfs -getfattr -d /tmp/a.txt"
+hdfs dfs -getfattr -d /tmp/a.txt
+echo "hdfs dfs -getfattr -d /tmp/b.txt"
+hdfs dfs -getfattr -d /tmp/b.txt
+echo "sudo -u hdfs hdfs dfs -setfattr -x user.myAttr /tmp/a.txt"
+sudo -u hdfs hdfs dfs -setfattr -x user.myAttr /tmp/a.txt
+echo "sudo -u hdfs hdfs dfs -setfattr -x user.novalue /tmp/b.txt"
+sudo -u hdfs hdfs dfs -setfattr -x user.novalue /tmp/b.txt
+echo "hdfs dfs -getfattr -d /tmp/a.txt"
+hdfs dfs -getfattr -d /tmp/a.txt
+echo "hdfs dfs -getfattr -d /tmp/b.txt"
+hdfs dfs -getfattr -d /tmp/b.txt
+
 
 echo "********************"
 echo "usage/help"
